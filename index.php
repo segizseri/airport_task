@@ -16,17 +16,17 @@ function getRoute()
 {
 	$flights = flights();
 	$result = [];
-	$duplicateKey = null;
+	$duplicateKey = [];
 	foreach ($flights as $key => $flight) {
 		foreach ($flights as $childKey => $childFlight) {
 			if ($flight['to'] === $childFlight['from']) {
 				if (strtotime($flight['arrival']) < strtotime($childFlight['depart'])) {
 					$flight['arrival'] = $childFlight['arrival'];
-					$duplicateKey = $childKey;
+					$duplicateKey[] = $childKey;
 				}
 			}
 		}
-		if ($key !== $duplicateKey) {
+		if (!in_array($key, $duplicateKey)) {
 			$result[] = $flight;	
 		}
 	}
@@ -63,20 +63,6 @@ function searchRoute($flights, $city = null)
 		}
 	}
 	return $result;
-}
-
-function group_by($key, $data) {
-    $result = array();
-
-    foreach($data as $val) {
-        if(array_key_exists($key, $val)){
-            $result[$val[$key]][] = $val;
-        }else{
-            $result[""][] = $val;
-        }
-    }
-
-    return $result;
 }
 
 function flights()
